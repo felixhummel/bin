@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+here=$(readlink -m $(dirname $0))
+
+play_alarm_cmd="cvlc $here/alarm-clock-short.ogg vlc://quit"
+if [[ -z ${1:-} ]]; then
+    $play_alarm_cmd
+else
+    echo "$play_alarm_cmd" | at now + $1 minutes 2>/dev/null
+fi
+
