@@ -1,15 +1,21 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ -f LICENSE ]]; then
+# Default to writing LICENSE.
+target=LICENSE
+if [[ -f "$target" && "$#" == 0 ]]; then
   echo 'Will not override LICENSE file.'
   exit 1
+fi
+
+if [[ ! -f "$1" ]]; then
+  target="$1"
 fi
 
 year=$(date +%Y)
 copyright_holder=$(getent passwd $(whoami) | cut -d ':' -f 5 | cut -d ',' -f 1)
 
-cat <<EOF > LICENSE
+cat <<EOF > "$target"
 The MIT License (MIT)
 
 Copyright (c) $year $copyright_holder
@@ -33,5 +39,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 EOF
 
-echo "Created LICENSE with (c) $year $copyright_holder"
+echo "Wrote $target with (c) $year $copyright_holder"
 
