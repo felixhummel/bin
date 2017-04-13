@@ -1,0 +1,25 @@
+#!/bin/bash
+set -euo pipefail
+
+# could generalize with $EDITOR, but meh
+open_old="vim"
+# go to end of file and insert
+open_new="vim  +$ +startinsert"
+
+# open, if exists
+if [[ -f $1 ]]; then
+  $open_old $1
+  exit $?
+fi
+
+
+cat <<'EOF' > $1
+#!/bin/bash
+set -euo pipefail
+
+
+EOF
+
+chmod +x $1
+$open_new $1
+
