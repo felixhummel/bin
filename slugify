@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+import sys
+from django.utils.text import slugify
+
+print(slugify(sys.stdin.read(), allow_unicode=True))
