@@ -2,14 +2,14 @@
 set -euo pipefail
 
 # Default to writing LICENSE.
-target=LICENSE
+target=${1:-LICENSE}
 if [[ -f "$target" && "$#" == 0 ]]; then
   echo 'Will not override LICENSE file.'
   exit 1
 fi
 
-if [[ ! -f "$1" ]]; then
-  target="$1"
+if [[ ! -f "$target" ]]; then
+  target="$target"
 fi
 
 year=$(date +%Y)
