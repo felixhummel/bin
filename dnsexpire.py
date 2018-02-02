@@ -43,11 +43,14 @@ def remain(domain):
 
 def main(domains):
     for domain in domains:
-        ip, remain_sec = remain(domain)
-        if remain_sec < 60:
-            print('%s (%s): %d sec' % (domain, ip, remain_sec))
-        else:
-            print('%s (%s): %d sec (about %.1d min)' % (domain, ip, remain_sec, remain_sec / 60.0))
+        try:
+            ip, remain_sec = remain(domain)
+            if remain_sec < 60:
+                print('%s (%s): %d sec' % (domain, ip, remain_sec))
+            else:
+                print('%s (%s): %d sec (about %.1d min)' % (domain, ip, remain_sec, remain_sec / 60.0))
+        except dns.resolver.NoAnswer:
+            print('%s: no answer' % domain)
 
 
 if __name__ == '__main__':
