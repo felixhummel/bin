@@ -1,3 +1,10 @@
 #!/bin/bash
 set -e
-exec xsel --clipboard
+
+# don't read from stdin (0) if it is a TTY
+if [[ -t 0 ]]; then
+  exec xclip -selection clipboard -o
+else
+  exec xclip -selection clipboard
+fi
+
