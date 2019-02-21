@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+here="$(readlink -m $(dirname $0))"
+tmpfile=/tmp/$(md5sum "$1" | cut -d' ' -f1).html
+echo $tmpfile
+pandoc --css $here/mdpreview.css "$1" > $tmpfile
+firefox $tmpfile
