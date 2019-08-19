@@ -9,8 +9,20 @@ if [[ ! -f $REPOS_CACHE ]]; then
   echo "found $(wc -l $REPOS_CACHE) repos"
 fi
 
+nasties=0
 for r in $(cat $REPOS_CACHE); do
   x=$(dirname $r)
   cd $x
-  [[ -n $(git status -s 2>/dev/null) ]] && echo "NASTY BOII: $x"
+  if [[ -n $(git status -s 2>/dev/null) ]]; then
+    echo "NASTY BOII: $x"
+    let ++nasties
+  fi
 done
+
+if [[ $nasties == 0 ]]; then
+  echo "GOOD BOY"
+else
+  total=$(wc -l $REPOS_CACHE | cut -d' ' -f1)
+  percent=$(echo "$nasties * 100 / $total" | bc)
+  echo "$nasties of $total ($percent%)"
+fi
