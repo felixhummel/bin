@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+REPOS_CACHE=~/.cache/nasty-boii.repos
+
+if [[ ! -f $REPOS_CACHE ]]; then
+  echo "initializing" >&2
+  find ~ -type d -name .git > $REPOS_CACHE
+  echo "found $(wc -l $REPOS_CACHE) repos"
+fi
+
+for r in $(cat $REPOS_CACHE); do
+  x=$(dirname $r)
+  cd $x
+  [[ -n $(git status -s 2>/dev/null) ]] && echo "NASTY BOII: $x"
+done
