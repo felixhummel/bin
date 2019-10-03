@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ $1 != -t ]]; then
+  exec awk '/^resource/ { gsub("\"", ""); print $2"."$3 }' $@
+else
+  xs=$(awk '/^resource/ { gsub("\"", ""); print $2"."$3 }' ${@:2})
+  for x in $xs; do
+    echo -n " -target $x"
+  done
+  echo
+fi
