@@ -7,7 +7,7 @@ file_given() {
   [[ -z ${1:-} ]]
 }
 finally() {
-  file_given && rm $f
+  file_given || rm $f
 }
 trap finally EXIT
 
