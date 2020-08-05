@@ -1,6 +1,19 @@
 #!/bin/bash
 set -euo pipefail
 
+if [[ $# != 2 ]]; then
+  cat <<EOF >&2
+Usage: $0 FILE...
+
+Lists all resource statements in given files.
+
+Example:
+
+  $0 foo.tf bar.tf
+EOF
+  exit 1
+fi
+
 if [[ $1 != -t ]]; then
   exec awk '/^resource/ { gsub("\"", ""); print $2"."$3 }' $@
 else
