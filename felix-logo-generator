@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ $# != 1 ]]; then
+  cat<<EOF >&2
+Usage: $0 <caption>
+
+Will generate <caption>.png
+EOF
+fi
+
+caption="$1"
+outfile="$caption.png"
+
+convert -size 400x400 -fill white -background black \
+  -font Noto-Mono -pointsize 50 \
+  -gravity Center caption:"$caption" \
+  -flatten $outfile
