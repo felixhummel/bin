@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+exec docker run --rm \
+  -v $PWD:/data \
+  --user $(id -u):$(id -g) \
+  asciinema/asciicast2gif \
+  $@
