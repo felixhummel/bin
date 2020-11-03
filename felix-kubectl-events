@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euo pipefail
+
+kubectl get --raw /api/v1/watch/events | jq -r '.object.reason + "\t" + .object.message'
