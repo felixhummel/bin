@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euo pipefail
+
+grep '^# ' $1 | perl -pe 's/# //' | python -c "import sys; print(', '.join(sys.stdin.read().strip().split('\n')))"
