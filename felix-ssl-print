@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+crt_file=$1
+openssl x509 -in $crt_file -text
