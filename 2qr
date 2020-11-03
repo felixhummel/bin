@@ -4,7 +4,7 @@ set -euo pipefail
 f=${1:-$(mktemp)}
 
 file_given() {
-  [[ -z ${1:-} ]]
+  [[ -n ${1:-} ]]
 }
 finally() {
   file_given || rm $f
