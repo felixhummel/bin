@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ $# != 1 ]]; then
+  cat<<EOF >&2
+Usage: $0 <caption>
+
+Will generate favicon.ico
+EOF
+fi
+
+SIZE=48
+
+caption=$1
+caplen=$(echo "$caption" | wc -c)
+# factor comes from experimentation
+pointsize=$(echo "$SIZE / $caplen * 1.5" | bc)
+
+convert -size ${SIZE}x${SIZE} -fill white -background black \
+  -font Noto-Mono -pointsize $pointsize \
+  -gravity Center caption:"$caption" \
+  -flatten favicon.ico
