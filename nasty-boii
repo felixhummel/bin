@@ -8,8 +8,20 @@ REPOS_CACHE=~/.cache/nasty-boii.repos
 # let nasty-boii run and copy lines from $REPOS_CACHE to $EXCLUDE_FILE
 EXCLUDE_FILE=~/.config/nasty-boii-excludes
 
+argv1=${1:-}
+
+if [[ $argv1 == '--no-cache' ]]; then
+  rm $REPOS_CACHE
+fi
+
+log() {
+  if [[ $argv1 == '-v' ]]; then
+    echo "$@" >&2
+  fi
+}
+
 if [[ -f $EXCLUDE_FILE ]]; then
-  echo "Using EXCLUDE_FILE=$EXCLUDE_FILE" >&2
+  log "Using EXCLUDE_FILE=$EXCLUDE_FILE"
   is_excluded() {
     grep -q $1 $EXCLUDE_FILE
   }
@@ -20,15 +32,15 @@ else
 fi
 
 if [[ ! -f $REPOS_CACHE ]]; then
-  echo "initializing" >&2
+  log "initializing"
   for ld in ${LOOKUP_DIRS[@]}; do
-    echo "looking in $ld" >&2
+    log "looking in $ld"
     find $ld -type d -name .git > $REPOS_CACHE
   done
-  echo "found $(wc -l $REPOS_CACHE) repos"
+  log "found $(wc -l $REPOS_CACHE) repos"
 else
-  echo "Using cache $REPOS_CACHE"
-  echo "Wanna clear it? Run rm -r $REPOS_CACHE"
+  log "Using cache $REPOS_CACHE"
+  log "Wanna clear it? Run rm -r $REPOS_CACHE"
 fi
 
 nasties=0
@@ -37,15 +49,14 @@ for r in $(cat $REPOS_CACHE); do
   x=$(dirname $r)
   cd $x
   if [[ -n $(git status -s 2>/dev/null) ]]; then
-    echo "NASTY BOII: $x"
+    echo "$x"
     let ++nasties
   fi
 done
 
-if [[ $nasties == 0 ]]; then
-  echo "GOOD BOY"
-else
+if [[ $nasties != 0 ]]; then
   total=$(wc -l $REPOS_CACHE | cut -d' ' -f1)
   percent=$(echo "$nasties * 100 / $total" | bc)
-  echo "$nasties of $total ($percent%)"
+  log "$nasties of $total ($percent%)"
+  exit 1
 fi
