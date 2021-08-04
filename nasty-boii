@@ -1,16 +1,37 @@
 #!/bin/bash
 set -euo pipefail
 
+LOOKUP_DIRS=(
+  ~
+)
 REPOS_CACHE=~/.cache/nasty-boii.repos
+EXCLUDE_FILE=~/.config/nasty-boii-excludes
+
+if [[ -f $EXCLUDE_FILE ]]; then
+  is_excluded() {
+    grep -q $1 $EXCLUDE_FILE
+  }
+else
+  is_excluded() {
+    return 1
+  }
+fi
 
 if [[ ! -f $REPOS_CACHE ]]; then
   echo "initializing" >&2
-  find ~ -type d -name .git > $REPOS_CACHE
+  for ld in ${LOOKUP_DIRS[@]}; do
+    echo "looking in $ld" >&2
+    find $ld -type d -name .git > $REPOS_CACHE
+  done
   echo "found $(wc -l $REPOS_CACHE) repos"
+else
+  echo "Using cache $REPOS_CACHE"
+  echo "Wanna clear it? Run rm -r $REPOS_CACHE"
 fi
 
 nasties=0
 for r in $(cat $REPOS_CACHE); do
+  is_excluded $r && continue
   x=$(dirname $r)
   cd $x
   if [[ -n $(git status -s 2>/dev/null) ]]; then
