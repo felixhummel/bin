@@ -10,7 +10,7 @@ EXCLUDE_FILE=~/.config/nasty-boii-excludes
 
 argv1=${1:-}
 
-if [[ $argv1 == '--no-cache' ]]; then
+if [[ $argv1 == '--clear-cache' ]]; then
   rm $REPOS_CACHE
 fi
 
