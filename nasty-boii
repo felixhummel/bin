@@ -5,9 +5,11 @@ LOOKUP_DIRS=(
   ~
 )
 REPOS_CACHE=~/.cache/nasty-boii.repos
+# let nasty-boii run and copy lines from $REPOS_CACHE to $EXCLUDE_FILE
 EXCLUDE_FILE=~/.config/nasty-boii-excludes
 
 if [[ -f $EXCLUDE_FILE ]]; then
+  echo "Using EXCLUDE_FILE=$EXCLUDE_FILE" >&2
   is_excluded() {
     grep -q $1 $EXCLUDE_FILE
   }
