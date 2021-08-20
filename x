@@ -13,6 +13,9 @@ filename=$(basename -- "$path")  # without path
 extension="${filename##*.}"
 
 case "$extension" in
+  "pdf")
+    atril "$path"
+    ;;
   "flac")
     vlc "$path"
     ;;
