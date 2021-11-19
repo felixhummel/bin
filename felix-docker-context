@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-
+# https://stackoverflow.com/a/61821807/241240
 
 dir=$1
 name=$(basename $dir)
