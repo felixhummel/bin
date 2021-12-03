@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euo pipefail
+
+exec sudo lsof -Pn -iTCP -sTCP:LISTEN
