@@ -35,7 +35,7 @@ def remain(domain):
     """
     :return: A tuple containing (ip, remaining_seconds)
     """
-    x = dns.resolver.query(domain)
+    x = dns.resolver.resolve(domain)
     ip = x.response.answer[0][0].address
     remaining = x.expiration - calendar.timegm(time.gmtime())
     return ip, remaining
