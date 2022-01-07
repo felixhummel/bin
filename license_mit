@@ -1,15 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# Default to writing LICENSE.
-target=${1:-LICENSE}
-if [[ -f "$target" && "$#" == 0 ]]; then
-  echo 'Will not override LICENSE file.'
+target="${1:-LICENSE}"
+if [[ -f "$target" ]]; then
+  echo "Will not override $target."
   exit 1
-fi
-
-if [[ ! -f "$target" ]]; then
-  target="$target"
 fi
 
 year=$(date +%Y)
@@ -18,7 +13,7 @@ copyright_holder=$(getent passwd $(whoami) | cut -d ':' -f 5 | cut -d ',' -f 1)
 cat <<EOF > "$target"
 The MIT License (MIT)
 
-Copyright (c) $year $copyright_holder
+Copyright © $year $copyright_holder
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -39,5 +34,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 EOF
 
-echo "Wrote $target with (c) $year $copyright_holder"
-
+echo "Wrote $target with © $year $copyright_holder"

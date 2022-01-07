@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+
+target="${1:-LICENSE}"
+if [[ -f "$target" ]]; then
+  echo "Will not override $target."
+  exit 1
+fi
+
+year=$(date +%Y)
+copyright_holder=$(getent passwd $(whoami) | cut -d ':' -f 5 | cut -d ',' -f 1)
+
+cat <<EOF > "$target"
+Copyright © $year $copyright_holder
+
+This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+International License. To view a copy of this license, visit
+http://creativecommons.org/licenses/by-sa/4.0/ or send a letter to Creative
+Commons, PO Box 1866, Mountain View, CA 94042, USA.
+EOF
+
+echo "Wrote $target with (c) $year $copyright_holder"
