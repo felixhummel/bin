@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euo pipefail
+
+# top: htop, bottom: syslog
+tmux new-session -s "logs" -d 'htop'
+tmux split-window -v 'tail -f /var/log/syslog'
+tmux -2 attach-session -d
