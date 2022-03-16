@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+
+
+get_compose_project_dir() {
+  docker inspect $1 | jq -r '.[0].Config.Labels["com.docker.compose.project.working_dir"]' | sed -e "s;$HOME;~;"
+}
+
+
+containers=$(docker ps -q)
+
+for container in $containers; do
+  get_compose_project_dir $container
+done | sort | uniq
