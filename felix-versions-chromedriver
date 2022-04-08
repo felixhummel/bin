@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+"""
+Get Chromedriver versions from Google.
+Note that we look for linux64 only.
+"""
+
+import os
+import re
+
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+import requests
+
+
+URL = 'https://chromedriver.storage.googleapis.com/'
+CACHE_DIR = Path('/tmp/felix-versions-chromedriver.cache')
+
+
+if os.environ.get('REQUESTS_CACHE', 'off') == 'on':
+    import requests_cache
+    requests_cache.install_cache(str(CACHE_DIR))
+
+
+response = requests.get(URL)
+response.raise_for_status()
+
+# strip default namespace https://stackoverflow.com/a/35165997/241240
+xml = re.sub(r"""\sxmlns=["'].+?["']""", '', response.text, count=1)
+root = ET.fromstring(xml)
+
+versions = []
+for e in root.findall('./Contents/Key'):
+    key = e.text  # e.g. "99.0.4844.17/chromedriver_linux64.zip"
+    match = re.match(r'^([\d.]+)/chromedriver_linux64.zip', key)
+    if match:
+        versions.append(match.group(1))
+
+def _version_sort_key(v):
+    # str(101.0.4951.15) --> int(101)
+    return int(v.split('.')[0])
+
+
+for v in sorted(versions, key=_version_sort_key):
+    print(v)
