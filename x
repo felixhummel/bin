@@ -19,7 +19,7 @@ case "$extension" in
   "flac")
     vlc "$path"
     ;;
-  "*")
+  *)
     echo not implemented >&2
     exit 1
     ;;
