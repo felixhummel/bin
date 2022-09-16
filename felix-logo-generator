@@ -20,11 +20,12 @@ _debug $caplen
 
 outfile="$caption.png"
 
+s=400
 # factor comes from experimentation
-pointsize=$(echo "400 / $caplen * 1.5" | bc)
+pointsize=$(echo "$s / $caplen * 1.5" | bc)
 _debug $pointsize
 
-convert -size 400x400 -fill white -background black \
+convert -size ${s}x${s} -fill white -background black \
   -font Noto-Mono -pointsize $pointsize \
   -gravity Center caption:"$caption" \
   -flatten $outfile
