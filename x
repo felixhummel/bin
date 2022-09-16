@@ -19,6 +19,12 @@ case "$extension" in
   "flac")
     vlc "$path"
     ;;
+  "png")
+    eog "$path"
+    ;;
+  "pbm")
+    gimp "$path"
+    ;;
   *)
     echo not implemented >&2
     exit 1
