@@ -1,0 +1,15 @@
+#!/bin/bash
+set -euo pipefail
+
+die() { echo "$@" 2>&1; exit 1; }
+
+dir=$1
+gitignore=$dir/.gitignore
+
+[[ ! -d $1 ]] && die "$1 must be a directory"
+[[ -f $gitignore ]] && die "$gitignore already exists"
+
+cat <<'EOF' > $gitignore
+*
+!.gitignore
+EOF
