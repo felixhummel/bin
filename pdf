@@ -6,7 +6,15 @@ set -euo pipefail
 basename=$(basename $1 .tex)
 [[ -n $1 ]]
 
-docker run -it --rm --user=$(id -u) -v $(pwd):/source schickling/latex pdflatex $1
+if hash pdflatex; then
+  pdflatex $1
+elif hash docker; then
+  echo "using docker" >&2
+  docker run -it --rm --user=$(id -u) -v $(pwd):/source schickling/latex pdflatex $1
+else
+  echo "install pdflatex or docker" >&2
+  exit 1
+fi
 
 rm ./"$basename.aux" ./"$basename.log"
 
