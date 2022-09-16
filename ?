@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [[ -d .git ]]; then
+    echo "git branch: $(git branch)"
+    echo -e "git remotes:\n$(git remote -v)"
+fi
+[[ -f .python-version ]] && echo "pyenv-version: $(cat .python-version)"
