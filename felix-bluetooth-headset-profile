@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+# Thanks to Jamie S.
+# https://askubuntu.com/a/773391/36078
+
+profile=$1
+# see completion.bash
+
+index=$(pacmd list-cards | grep bluez_card -B1 | grep index | awk '{print $2}')
+pacmd set-card-profile $index $profile
