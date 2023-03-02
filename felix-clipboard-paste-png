@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+path=img/$(uuid).png
+clipboard > $path 
+echo $path
