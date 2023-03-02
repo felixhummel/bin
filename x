@@ -19,6 +19,9 @@ case "$extension" in
   "flac")
     vlc "$path"
     ;;
+  "jpg")
+    eog "$path"
+    ;;
   "png")
     eog "$path"
     ;;
