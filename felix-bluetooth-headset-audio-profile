@@ -4,8 +4,22 @@ set -euo pipefail
 # Thanks to Jamie S.
 # https://askubuntu.com/a/773391/36078
 
-profile=$1
-# see completion.bash
+name=$1
+
+# see also: completion.bash
+case $name in
+  hifi)
+    profile=a2dp_sink
+    ;;
+  mic)
+    profile=headset_head_unit
+    ;;
+  *)
+    echo "hifi|mic" >&2
+    exit 1
+    ;;
+esac
+
 
 index=$(pacmd list-cards | grep bluez_card -B1 | grep index | awk '{print $2}')
 pacmd set-card-profile $index $profile
