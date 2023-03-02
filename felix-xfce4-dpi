@@ -1,0 +1,4 @@
+#!/bin/bash
+set -euo pipefail
+
+xfconf-query -c xsettings -p /Xft/DPI -s $1
