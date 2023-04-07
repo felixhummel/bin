@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+
+base=$(basename $PWD)
+out=$base.webm
+
+# https://github.com/acaudwell/Gource/wiki/Videos#ffmpeg-using-webm-codec
+felix-gource-play --output-framerate 60 --output-ppm-stream - \
+  | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 10000K $out
+
