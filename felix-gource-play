@@ -1,0 +1,33 @@
+#!/bin/bash
+set -euo pipefail
+
+# approximate duration of video in seconds (skipping not considered)
+vid_duration_s=10
+
+start_commit=$(git rev-list --max-parents=0 HEAD)
+t0=$(git show -s --format=%ct $start_commit)
+t1=$(git show -s --format=%ct HEAD)
+
+real_s=$(( $t1 - $t0 ))
+real_d=$(python -c "print($real_s / 3600 / 24)")
+echo "${real_d} days" >&2
+s_per_d=$(python -c "print($vid_duration_s / $real_d)")
+echo "${s_per_d} sec/day" >&2
+
+gource \
+  -1280x720 \
+  --auto-skip-seconds 0.1 \
+  --disable-bloom \
+  --no-time-travel \
+  --seconds-per-day $s_per_d \
+  --date-format '%Y-%m' \
+  --user-show-filter Felix \
+  --hide bloom,dirnames,filenames,usernames \
+  --file-extensions \
+  --filename-time 2 \
+  --file-idle-time 0 \
+  --caption-offset 40 \
+  --fixed-user-size \
+  --hash-seed 4150 \
+  --key \
+  $@
