@@ -1,10 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-base=$(basename $PWD)
-out=$base.webm
+# it's OK to ignore "Invalid data found when processing input"
+# https://github.com/acaudwell/Gource/issues/216
 
-# https://github.com/acaudwell/Gource/wiki/Videos#ffmpeg-using-webm-codec
-felix-gource-play --output-framerate 60 --output-ppm-stream - \
-  | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 10000K $out
-
+xvfb-run \
+  felix-gource-play --output-framerate 60 --output-ppm-stream - \
+  | ffmpeg \
+    -hide_banner -probesize 50M -y -r 60 -f image2pipe -vcodec ppm \
+    -i - \
+    -vcodec libvpx -an -b:v 8M \
+    gource.webm

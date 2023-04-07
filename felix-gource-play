@@ -14,8 +14,8 @@ echo "${real_d} days" >&2
 s_per_d=$(python -c "print($vid_duration_s / $real_d)")
 echo "${s_per_d} sec/day" >&2
 
-gource \
-  -1280x720 \
+exec gource \
+  -1920x1080 \
   --auto-skip-seconds 0.1 \
   --disable-bloom \
   --no-time-travel \
