@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+DIR=${1:-$PWD}
+
+# ignore hidden: -not -path '*/.*'
+IFS=$'\n' xs=$(find $DIR -type f -name 'docker-compose.y*ml' -not -path '*/.*')
+
+for x in $xs; do
+  echo "$(dirname $x)"
+done | sort
