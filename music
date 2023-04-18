@@ -16,26 +16,46 @@ except ImportError:
     from dbus.exceptions import DBusException
 
 
-def get_player():
-    bus = dbus.SessionBus()
-    candidates = [n for n in bus.list_names() if n.startswith('org.mpris.MediaPlayer2')]
-    count = len(candidates)
-    if count != 1:
-        log.warning(f'count = {count}')
-    for c in candidates:
-        log.debug(f'found {c}')
-    name = candidates[0]
-    log.info(f'using {name}')
-    proxy = bus.get_object(name, '/org/mpris/MediaPlayer2')
-    return dbus.Interface(proxy, dbus_interface='org.mpris.MediaPlayer2.Player')
+bus = dbus.SessionBus()
+
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        log.debug(f'Player(name="{self.name}")')
+        self.proxy = bus.get_object(name, '/org/mpris/MediaPlayer2')
+        self.interface = dbus.Interface(self.proxy, dbus_interface='org.mpris.MediaPlayer2.Player')
+
+    def call_method(self, method_name):
+        method = self.interface.get_dbus_method(method_name)
+        return method()
+
+    def can_pause(self) -> bool:
+        # qdbus org.mpris.MediaPlayer2.parole /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.CanPause
+        return self.interface.CanPause
+
+
+def get_players():
+    # qdbus | rg org.mpris.MediaPlayer2
+    names = [n for n in bus.list_names() if n.startswith('org.mpris.MediaPlayer2')]
+    return [Player(n) for n in names]
+
+
+def get_current_player():
+    players = get_players()
+    for player in players:
+        if player.can_pause():
+            log.info(f'found player that can pause: {player.name}')
+            return player
+    log.info(f'returning first player found: {player.name}')
+    return players[0]
 
 
 @click.command()
 @click.argument('what', type=click.Choice(['PlayPause', 'Previous', 'Next']))
 def main(what):
-    player = get_player()
-    method = player.get_dbus_method(what)
-    method()
+    player = get_current_player()
+    player.call_method(what)
 
 
 if __name__ == '__main__':
