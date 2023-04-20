@@ -1,0 +1,24 @@
+#!/bin/bash
+set -euo pipefail
+# Usage:
+# cd ~/hacks/foo-bar
+# felix-pyenv-virtualenv
+#
+# Results in virtualenv called "foo-bar"
+
+# get latest pyenv version; fall back to default
+# This could break in any number of ways (no "rg", no "sort -V"). :>
+version=$(pyenv versions --bare --skip-aliases | rg '^3' | rg -v envs | sort -V | tail -n1 || echo "3.10.6")
+venv_name=${1:-$(basename $PWD)}
+
+pyenv virtualenv $version $venv_name
+pyenv local $venv_name
+
+pip=$(pyenv which pip)
+$pip install -U pip
+
+if [[ ! -f .gitignore ]]; then
+  cat <<EOF > .gitignore
+.python-version
+EOF
+fi
