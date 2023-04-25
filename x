@@ -16,6 +16,7 @@ fi
 filename=$(basename -- "$path")  # without path
 extension="${filename##*.}"
 
+shopt -s nocasematch
 case "$extension" in
   pdf)
     atril "$path"
