@@ -20,11 +20,13 @@ bus = dbus.SessionBus()
 
 
 class Player:
+    MUSIC_PLAYERS = ['mpv', 'vlc']
     def __init__(self, name):
         self.name = name
-        log.debug(f'Player(name="{self.name}")')
         self.proxy = bus.get_object(name, '/org/mpris/MediaPlayer2')
         self.interface = dbus.Interface(self.proxy, dbus_interface='org.mpris.MediaPlayer2.Player')
+        self.score = self._score()
+        log.debug(f'Player name="{self.name}" score={self.score}')
 
     def call_method(self, method_name):
         method = self.interface.get_dbus_method(method_name)
@@ -34,6 +36,17 @@ class Player:
         # qdbus org.mpris.MediaPlayer2.parole /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.CanPause
         return self.interface.CanPause
 
+    def is_music_player(self) -> bool:
+        return any([key in self.name for key in self.MUSIC_PLAYERS])
+
+    def _score(self):
+        result = 0
+        if self.can_pause():
+            result += 1
+        if self.is_music_player():
+            result += 1
+        return result
+
 
 def get_players():
     # qdbus | rg org.mpris.MediaPlayer2
@@ -41,20 +54,19 @@ def get_players():
     return [Player(n) for n in names]
 
 
-def get_current_player():
+def get_best_player():
     players = get_players()
-    for player in players:
-        if player.can_pause():
-            log.info(f'found player that can pause: {player.name}')
-            return player
-    log.info(f'returning first player found: {player.name}')
-    return players[0]
+    scored = {}  # on identical scores: last one wins (yagni)
+    for p in players:
+        scored[p.score] = p
+    highscore = next(reversed(sorted(scored)))
+    return scored[highscore]
 
 
 @click.command()
 @click.argument('what', type=click.Choice(['PlayPause', 'Previous', 'Next']))
 def main(what):
-    player = get_current_player()
+    player = get_best_player()
     player.call_method(what)
 
 
