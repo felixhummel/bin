@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+
+sqlite3 stats.db <<'EOF'
+.mode column
+.headers on
+.separator ROW "\n"
+.nullvalue NULL
+.width 50
+
+SELECT
+    cmd,
+    count(id) AS count
+  FROM usage
+  WHERE cmd LIKE 'felix-%'
+  GROUP BY cmd
+  ORDER BY count ASC;
+EOF

@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+# stats for felix-*
+
+sqlite-utils create-table --replace stats.db usage \
+    id integer \
+    dt text \
+    cmd text
+
+# enable history for this process
+HISTFILE=~/.bash_history
+history -n  
+
+hist_tsv() {
+  echo -e "id\tdt\tcmd"  # header
+  history | rg --only-matching '(\d+)  (\d{4}-\d{2}-\d{2}__\d{2}-\d{2}-\d{2}) [$] (felix-[^ ]+)' -r $'$1\t$2\t$3'
+}
+hist_tsv | sqlite-utils insert stats.db usage - --tsv
