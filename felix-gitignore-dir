@@ -13,3 +13,5 @@ cat <<'EOF' > $gitignore
 *
 !.gitignore
 EOF
+
+gitadd $gitignore

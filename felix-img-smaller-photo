@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+# Use-Case: HD picture from phone to small picture in block
+# - expects foo.jpg
+# - resizes to 800 width (default)
+# - writes foo.png
+
+input_file="$1"
+width=${2:-800}
+
+output_file="$(basename "$input_file" .jpg).png"
+convert "$input_file" -resize $width "$output_file"
+echo "$output_file" >&2
