@@ -23,12 +23,7 @@ def _exit1(msg):
 try:
     import dns.resolver
 except ImportError:
-    if six.PY2:
-        _exit1('Please install dnspython, e.g. ``pip install --user dnspython``')
-    elif six.PY3:
-        _exit1('Please install dnspython3, e.g. ``pip install --user dnspython3``')
-    else:
-        _exit1('Please install dnspython for your Python version.')
+    _exit1('Please install dnspython3, e.g. ``pip install dnspython``')
 
 
 def remain(domain):
