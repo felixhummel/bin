@@ -42,4 +42,4 @@ case ${#files[@]} in
     exit 1
     ;;
 esac
-vim $f
+$EDITOR $f
