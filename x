@@ -21,6 +21,9 @@ case "$extension" in
   pdf)
     atril "$path"
     ;;
+  html)
+    python -mwebbrowser "$path"
+    ;;
   "flac")
     vlc "$path"
     ;;
