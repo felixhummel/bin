@@ -4,6 +4,8 @@
 # pip install -U dbus-python click
 import logging
 import os
+import re
+from typing import List
 
 import click
 import dbus
@@ -18,17 +20,18 @@ except ImportError:
     from dbus.exceptions import DBusException
 
 
+RE_NAME = re.compile(r'org\.mpris\.MediaPlayer2\.(.+)\.instance\d+')
+
 bus = dbus.SessionBus()
 
 
 class Player:
     MUSIC_PLAYERS = ['mpv', 'vlc']
-    def __init__(self, name):
-        self.name = name
-        self.proxy = bus.get_object(name, '/org/mpris/MediaPlayer2')
+    def __init__(self, bus_name):
+        self.bus_name = bus_name
+        self.name = RE_NAME.match(bus_name).group(1)
+        self.proxy = bus.get_object(bus_name, '/org/mpris/MediaPlayer2')
         self.interface = dbus.Interface(self.proxy, dbus_interface='org.mpris.MediaPlayer2.Player')
-        self.score = self._score()
-        log.info(f'Player name="{self.name}" score={self.score}')
 
     def call_method(self, method_name):
         method = self.interface.get_dbus_method(method_name)
@@ -41,28 +44,39 @@ class Player:
     def is_music_player(self) -> bool:
         return any([key in self.name for key in self.MUSIC_PLAYERS])
 
-    def _score(self):
-        result = 0
-        if self.can_pause():
-            result += 1
-        if self.is_music_player():
-            result += 1
-        return result
+    def __repr__(self):
+        return f'Player(name="{self.name}")'
+
+    def __str__(self):
+        return self.name
 
 
 def get_players():
     # qdbus | rg org.mpris.MediaPlayer2
-    names = [n for n in bus.list_names() if n.startswith('org.mpris.MediaPlayer2')]
-    return [Player(n) for n in names]
+    for n in bus.list_names():
+        if n.startswith('org.mpris.MediaPlayer2'):
+            p = Player(n)
+            log.info(f'found player {p}')
+            yield p
 
 
 def get_best_player():
     players = get_players()
     scored = {}  # on identical scores: last one wins (yagni)
-    for p in players:
-        scored[p.score] = p
+    for player in players:
+        score = 0
+        if player.can_pause():
+            score += 3
+        if player.is_music_player():
+            score += 2
+        if 'firefox' in player.name:  # prefer firefox
+            score += 1
+        log.debug(f'score({player}) = {score}')
+        scored[score] = player
     highscore = next(reversed(sorted(scored)))
-    return scored[highscore]
+    winner = scored[highscore]
+    log.debug(f'winner = {winner}')
+    return winner
 
 
 @click.command()
