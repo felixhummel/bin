@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+if hash nvim 2>/dev/null; then
+  exec nvim -d "$@"
+else
+  exec vimdiff "$@"
+fi
