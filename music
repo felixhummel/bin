@@ -20,7 +20,7 @@ except ImportError:
     from dbus.exceptions import DBusException
 
 
-RE_NAME = re.compile(r'org\.mpris\.MediaPlayer2\.(.+)\.instance\d+')
+RE_NAME = re.compile(r'org\.mpris\.MediaPlayer2\.(.+)(\.instance\d+)?')
 
 bus = dbus.SessionBus()
 
@@ -29,6 +29,7 @@ class Player:
     MUSIC_PLAYERS = ['mpv', 'vlc']
     def __init__(self, bus_name):
         self.bus_name = bus_name
+        log.debug(f'Player("{bus_name}")')
         self.name = RE_NAME.match(bus_name).group(1)
         self.proxy = bus.get_object(bus_name, '/org/mpris/MediaPlayer2')
         self.interface = dbus.Interface(self.proxy, dbus_interface='org.mpris.MediaPlayer2.Player')
@@ -60,8 +61,7 @@ def get_players():
             yield p
 
 
-def get_best_player():
-    players = get_players()
+def get_best_player(players: [Player]) -> Player:
     scored = {}  # on identical scores: last one wins (yagni)
     for player in players:
         score = 0
@@ -79,12 +79,33 @@ def get_best_player():
     return winner
 
 
-@click.command()
-@click.argument('what', type=click.Choice(['PlayPause', 'Previous', 'Next']))
-def main(what):
-    player = get_best_player()
-    player.call_method(what)
 
+players = get_players()
+
+
+@click.group()
+def main():
+    pass
+
+@main.command(name='PlayPause')
+def playpause():
+    player = get_best_player(players)
+    player.call_method('PlayPause')
+
+@main.command(name='Previous')
+def playpause():
+    player = get_best_player(players)
+    player.call_method('Previous')
+
+@main.command(name='Next')
+def playpause():
+    player = get_best_player(players)
+    player.call_method('Next')
+
+@main.command(name='players')
+def _players():
+    for player in players:
+        print(player)
 
 if __name__ == '__main__':
     main()
