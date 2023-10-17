@@ -33,6 +33,9 @@ case "$extension" in
   "pbm")
     gimp "$path"
     ;;
+  svg)
+    firefox "$path"
+    ;;
   @(mp4|webm))
     parole "$path"
     ;;
