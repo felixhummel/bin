@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+BPM (Beats Per Minute) describe the fraction F[1/m] = x / 1m.
+
+- Divide F by 60 to get beats per second --> F_s.
+- Run 1 / F_s to get the interval I.
+- Multiply I by 1000 to get ms.
+
+>>> bpm2ms(120)
+500
+"""
+import sys
+
+
+def bpm2ms(bpm):
+    f_s = bpm / 60
+    i = 1 / f_s
+    return i * 1000
+
+
+if __name__ == '__main__':
+    print(bpm2ms(int(sys.argv[1])))
