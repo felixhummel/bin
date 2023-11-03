@@ -43,6 +43,5 @@ case ${#files[@]} in
     ;;
 esac
 
-# set terminal title
-echo -ne "\033]0;LOG\007"
+bash-set-terminal-title LOG
 $EDITOR $f
