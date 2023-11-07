@@ -1,0 +1,14 @@
+#!/bin/bash
+set -euo pipefail
+# Copies all volumes defined in the current compose project.
+compose_project=${COMPOSE_PROJECT_NAME:-$(basename $PWD)}
+src=/var/lib/docker/volumes
+target=/var/backups/volumes
+
+relative_volumes=$(docker-compose config --volumes)
+volumes=$(for v in $relative_volumes; do echo ${compose_project}_$v; done)
+
+for v in $volumes; do
+  sudo du -sh $src/$v
+  sudo rsync -ah $src/$v/ $target/$v/
+done
