@@ -1,6 +1,6 @@
 #!/bin/bash
-# vim: set fileencoding=utf-8 filetype=sh :
 set -euo pipefail
-
 # http://unix.stackexchange.com/questions/225095/how-to-get-total-read-and-write-iops-in-linux
+
+# sudo apt-get install sysstat
 exec iostat -dx | tail -fn +3 | awk '{ print $1"\t"$4"\t"$5 }'
