@@ -25,5 +25,5 @@ if __name__ == '__main__':
     paths = [Path(a) for a in sys.argv[1:]]
     result = {path: repo_wc(path) for path in paths}
     for p, c in result.items():
-        print(p, c)
+        print(c, p)
     print(sum(result.values()))
