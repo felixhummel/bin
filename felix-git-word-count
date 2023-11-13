@@ -1,16 +1,22 @@
 #!/usr/bin/env python
 # encoding: utf-8
-from subprocess import check_output
+from subprocess import check_output, CalledProcessError
 
 
 def repo_wc(path):
-    commits = check_output("git log --since=2023-01-01 --author=felix --pretty=format:'%H' --reverse", cwd=path, shell=True, text=True).split('\n')
+    try:
+        _out = check_output("git log --since=2023-01-01 --author=felixhummel.de --pretty=format:'%H' --reverse", cwd=path, shell=True, text=True).strip()
+        if not _out:
+            return 0
+        commits = _out.split('\n')
 
-    def wc(commit):                                                           
-        return int(check_output(f"git show --word-diff=porcelain {commit} '*.md' | rg '^[+]' | wc -w", shell=True, text=True, cwd=path))
+        def wc(commit):
+            return int(check_output(f"git show --word-diff=porcelain {commit} '*.md' | rg '^[+]' | wc -w", shell=True, text=True, cwd=path))
 
-    wcs = [wc(c) for c in commits]                                                                                                                                      
-    return sum(wcs)           
+        wcs = [wc(c) for c in commits]
+        return sum(wcs)
+    except CalledProcessError:
+        return 0
 
 
 if __name__ == '__main__':
