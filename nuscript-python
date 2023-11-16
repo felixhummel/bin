@@ -1,10 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-# could generalize with $EDITOR, but meh
-open_old="vim"
+open_old="$EDITOR"
 # go to end of file and insert
-open_new="vim  +$ +startinsert"
+open_new="$EDITOR  +$ +startinsert"
 
 # open, if exists
 if [[ -f $1 ]]; then
