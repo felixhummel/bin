@@ -40,7 +40,6 @@ case "$extension" in
     parole "$path"
     ;;
   *)
-    echo not implemented >&2
-    exit 1
+    xdg-open "$path"
     ;;
 esac
