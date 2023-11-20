@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+slug=${1:-}
+
 dir=$PWD
 
 # use ~/LOG if we are at $HOME
@@ -15,6 +17,9 @@ mkdir -p $dir
 
 dt=$(date +%m-%d)  # e.g. 09-31
 base=$dir/$dt
+if [[ -n $slug ]]; then
+  base="${base}-${slug}"
+fi
 
 # given '?' as first arg, use fzf to select an existing file
 if [[ ${1:-} == '?' ]]; then
