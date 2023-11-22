@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+# TODO: man felix-nix
+cat <<'EOF'
+# list
+nix-env -q
+
+# install
+nix-env -iA nixpkgs.$packagename
+
+# uninstall
+nix-env --uninstall $packagename
+
+# list generations
+nix-env --list-generations
+
+# rollback to gen
+nix-env --switch-generation $i
+EOF
