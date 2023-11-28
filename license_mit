@@ -3,17 +3,16 @@ set -euo pipefail
 
 target="${1:-LICENSE}"
 if [[ -f "$target" ]]; then
-  echo "Will not override $target."
+  echo "Will not override $target." >&2
   exit 1
 fi
 
-year=$(date +%Y)
 copyright_holder=$(getent passwd $(whoami) | cut -d ':' -f 5 | cut -d ',' -f 1)
 
 cat <<EOF > "$target"
 The MIT License (MIT)
 
-Copyright © $year $copyright_holder
+Copyright © $copyright_holder
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -34,4 +33,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 EOF
 
-echo "Wrote $target with © $year $copyright_holder"
+echo "Wrote $target with © $copyright_holder" >&2
