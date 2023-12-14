@@ -14,5 +14,6 @@ SELECT
   FROM usage
   WHERE cmd LIKE 'felix-%'
   GROUP BY cmd
-  ORDER BY count ASC;
+  HAVING count(id) > 1
+  ORDER BY count DESC;
 EOF

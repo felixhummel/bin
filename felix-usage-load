@@ -9,7 +9,8 @@ sqlite-utils create-table --replace stats.db usage \
 
 # enable history for this process
 HISTFILE=~/.bash_history
-history -n  
+HISTTIMEFORMAT='%F__%H-%M-%S $ '
+history -n
 
 hist_tsv() {
   echo -e "id\tdt\tcmd"  # header
