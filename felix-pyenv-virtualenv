@@ -39,6 +39,6 @@ fi
 
 # log
 cat <<EOF >&2
-pyenv version:
 $(pyenv version)
+$(pyenv which python)
 EOF
