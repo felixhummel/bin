@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euo pipefail
+
+cmd=$1
+
+abs=$(which $cmd)
+target=~/.local/share/applications/$cmd.desktop
+[[ ! -f $target ]]
+
+# felix-desktop-icon-browser
+cat <<EOF > $target
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=$cmd
+Exec=$abs
+Path=/tmp
+Icon=utilities-terminal
+EOF
+
