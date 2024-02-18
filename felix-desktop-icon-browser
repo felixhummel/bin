@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+hash gtk3-icon-browser || sudo apt install gtk3-icon-browser
+exec gtk3-icon-browser
