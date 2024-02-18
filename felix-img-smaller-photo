@@ -1,13 +1,35 @@
 #!/bin/bash
 set -euo pipefail
-# Use-Case: HD picture from phone to small picture in block
-# - expects foo.jpg
-# - resizes to 800 width (default)
-# - writes foo.png
+
+WIDTH=${WIDTH:-1000}
+
+me=$(basename $0)
+
+if [[ $# != 2 ]]; then
+  cat <<EOF
+  Usage: $me INPUT OUTPUT
+
+  Convert HD picture from phone to small picture ready for a blog.
+
+  - resize to \$WIDTH (default: WIDTH=$WIDTH)
+  - use gausssian blur to optimize the size
+  - remove exif data
+
+  Example:
+
+    $me foo.jpg bar.jpg
+
+  Sources:
+
+  https://stackoverflow.com/a/7262050/241240
+
+EOF
+  exit 1
+fi
 
 input_file="$1"
-width=${2:-800}
+output_file="$2"
 
-output_file="$(basename "$input_file" .jpg).png"
-convert "$input_file" -resize $width "$output_file"
+
+convert -strip -interlace Plane -gaussian-blur 0.05 -quality 85% -resize $WIDTH "$input_file" "$output_file"
 echo "$output_file" >&2
