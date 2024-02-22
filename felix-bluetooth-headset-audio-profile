@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -euo pipefail
 
 # Thanks to Jamie S.
@@ -12,7 +13,7 @@ case $name in
     profile=a2dp_sink
     ;;
   mic)
-    profile=headset_head_unit
+    profile=handsfree_head_unit
     ;;
   *)
     echo "hifi|mic" >&2
@@ -22,4 +23,7 @@ esac
 
 
 index=$(pacmd list-cards | grep bluez_card -B1 | grep index | awk '{print $2}')
+
+# list available profiles with
+#   pacmd list-cards | rg -A4 'index:|profiles:'
 pacmd set-card-profile $index $profile
