@@ -12,7 +12,6 @@ if [[ $# != 2 ]]; then
   Convert HD picture from phone to small picture ready for a blog.
 
   - resize to \$WIDTH (default: WIDTH=$WIDTH)
-  - use gausssian blur to optimize the size
   - remove exif data
 
   Example:
