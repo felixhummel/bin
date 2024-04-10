@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+tmp=$(mktemp "${TMPDIR:-/tmp}/$(basename $0).XXXXXXXXXX.json")
+clipboard | jq . > $tmp
+exec $EDITOR $tmp
