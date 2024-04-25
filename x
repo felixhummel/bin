@@ -36,9 +36,6 @@ case "$extension" in
   svg)
     firefox "$path"
     ;;
-  @(mp4|webm))
-    parole "$path"
-    ;;
   *)
     xdg-open "$path"
     ;;
