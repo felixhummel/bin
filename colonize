@@ -1,3 +1,7 @@
 #!/bin/bash
-cd ~/apps/colonization/
+# https://archive.org/details/msdos_Sid_Meiers_Colonization_1994
+# aunpack Sid_Meiers_Colonization_1994.zip
+# mv SMColoni/COLONIZE/ ~/games/
+cd ~/games
+echo "release mouse with Ctrl+F10" >&2
 dosbox -conf dosbox.conf COLONIZE/VICEROY.EXE
