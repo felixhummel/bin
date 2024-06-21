@@ -1,6 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
+# DEPRECATED
+# It is better set sane XDG defaults, e.g. for HTML files:
+#     xdg-mime query filetype /tmp/index.html
+#     xdg-mime query default text/html
+#     xdg-mime default firefox.desktop text/html
+#     xdg-mime default org.gnome.eog.desktop image/jpeg image/png
+
 # https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Pattern-Matching
 # @(patternlist) matches one of the patterns
 shopt -s extglob
@@ -18,18 +25,6 @@ extension="${filename##*.}"
 
 shopt -s nocasematch
 case "$extension" in
-  pdf)
-    atril "$path"
-    ;;
-  html)
-    python -mwebbrowser "$path"
-    ;;
-  "flac")
-    vlc "$path"
-    ;;
-  @(jpg|png))
-    eog "$path"
-    ;;
   "pbm")
     gimp "$path"
     ;;
