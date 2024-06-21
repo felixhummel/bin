@@ -2,7 +2,8 @@
 # shellcheck disable=SC2086
 set -euo pipefail
 
-for i in $(seq -9 0); do
+count=${1:-2}
+for i in $(seq -${count} 0); do
   read startup _ <<< $(journalctl -b$i -o short-iso | head -n1)
   read shutdown _ <<< $(journalctl -b$i -o short-iso | tail -n1)
   echo "$startup $shutdown"
