@@ -4,4 +4,9 @@
 import sys
 from django.utils.text import slugify
 
-print(slugify(sys.stdin.read(), allow_unicode=True))
+args = sys.argv[1:]
+if args:
+  txt = ' '.join(args)
+else:
+  txt = sys.stdin.read()
+print(slugify(txt, allow_unicode=True))
