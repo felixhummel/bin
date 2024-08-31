@@ -1,7 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-WIDTH=${WIDTH:-1000}
+# My photos are usually 4032x2268 or
+# identify -format "%w %h" 20240831_122037.jpg
+
+MAX=${MAX:-1000}
 
 me=$(basename $0)
 
@@ -11,7 +14,8 @@ if [[ $# != 2 ]]; then
 
   Convert HD picture from phone to small picture ready for a blog.
 
-  - resize to \$WIDTH (default: WIDTH=$WIDTH)
+  - resize to \$MAX (default: MAX=$MAX)
+  - keep exif rotation
   - remove exif data
 
   Example:
@@ -30,5 +34,5 @@ input_file="$1"
 output_file="$2"
 
 
-convert -strip -interlace Plane -gaussian-blur 0.05 -quality 85% -resize $WIDTH "$input_file" "$output_file"
+convert -strip -interlace Plane -gaussian-blur 0.05 -quality 85% -resize ${MAX}x${MAX} -auto-orient "$input_file" "$output_file"
 echo "$output_file" >&2
