@@ -5,12 +5,13 @@ set -euo pipefail
 # identify -format "%w %h" 20240831_122037.jpg
 
 MAX=${MAX:-1000}
+BAKDIR=orig
 
-me=$(basename $0)
+me="$(basename "$0")"
 
-if [[ $# != 2 ]]; then
+if [[ $# -lt 1 ]]; then
   cat <<EOF
-  Usage: $me INPUT OUTPUT
+  Usage: $me FILE...
 
   Convert HD picture from phone to small picture ready for a blog.
 
@@ -20,7 +21,8 @@ if [[ $# != 2 ]]; then
 
   Example:
 
-    $me foo.jpg bar.jpg
+    $me foo.jpg
+    # results in a resized foo.jpg and "orig/foo.jpg"
 
   Sources:
 
@@ -30,9 +32,14 @@ EOF
   exit 1
 fi
 
-input_file="$1"
-output_file="$2"
+input_files=("$@")
 
-
-convert -strip -interlace Plane -gaussian-blur 0.05 -quality 85% -resize ${MAX}x${MAX} -auto-orient "$input_file" "$output_file"
-echo "$output_file" >&2
+for filename in "${input_files[@]}"; do
+  bak="$BAKDIR/$filename"
+  if [[ -f "$bak" ]]; then
+    echo "Will not overwrite original file '$bak'" >&2
+    exit 1
+  fi
+  mv "$filename" "$bak"
+  convert -strip -interlace Plane -gaussian-blur 0.05 -quality 85% -resize "${MAX}x${MAX}" -auto-orient "$bak" "$filename"
+done
