@@ -1,5 +1,13 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 filetype=python :
+#!/usr/bin/env -S uv run
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "dnspython",
+# ]
+# ///
+#
+# This execution pattern is based on
+# https://simonwillison.net/2024/Aug/21/usrbinenv-uv-run/
 """
 Prints the expiration time of a domain as seen from the host this is run on.
 
@@ -7,23 +15,12 @@ Example Output:
 
     felixhummel.de (37.200.98.98): 3055 sec (about 50 min)
 """
-from __future__ import print_function
-import six
-
 import calendar
 import time
 import sys
 
 
-def _exit1(msg):
-    print(msg, file=sys.stderr)
-    raise SystemExit(1)
-
-
-try:
-    import dns.resolver
-except ImportError:
-    _exit1('Please install dnspython3, e.g. ``pip install dnspython``')
+import dns.resolver
 
 
 def remain(domain):
@@ -50,7 +47,8 @@ def main(domains):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        _exit1('Usage: dns_expire <domain>...')
+        print('Usage: dns_expire <domain>...', file=sys.stderr)
+        raise SystemExit(1)
     domains = sys.argv[1:]
     main(domains)
 
