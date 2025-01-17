@@ -1,0 +1,8 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+echo "zone_id id type name value" >&2
+curl -fSsL "https://dns.hetzner.com/api/v1/records" \
+  -H "Auth-API-Token: $HETZNER_DNS_TOKEN" \
+  | jq -r '.records | .[] | "\(.zone_id) \(.id) \(.type) \(.name) \(.value)"' | sort | rg mD6ZS64fi8JHY7gZqSUezh
