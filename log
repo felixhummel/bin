@@ -4,16 +4,21 @@ set -euo pipefail
 slug=${1:-}
 
 dir=$PWD
+title=LOG
 
 # use ~/LOG if we are at $HOME
-[[ "$(readlink -m $dir)" == $HOME ]] && dir=~/LOG
+if [[ "$(readlink -m "$dir")" == "$HOME" ]]; then
+  dir=~/LOG
+  title="PERSONAL LOG"
+fi
+
 # use ./LOG if present
 [[ -d ./LOG ]] && dir=$(readlink -m ./LOG)
 
 # subdirectory for year, e.g. LOG/22/
 year=$(date +%y)  # e.g. 22
 dir=$dir/$year
-mkdir -p $dir
+mkdir -p "$dir"
 
 dt=$(date +%m-%d)  # e.g. 09-31
 base=$dir/$dt
@@ -23,7 +28,7 @@ fi
 
 # given '?' as first arg, use fzf to select an existing file
 if [[ ${1:-} == '?' ]]; then
-  cd $dir
+  cd "$dir"
   f=$(fzf)
   cd -
   $EDITOR "$dir/$f"
@@ -32,21 +37,24 @@ fi
 
 # handle "09-31-something.md"
 shopt -s nullglob  # doesnotexist* --> ""
+# shellcheck disable=SC2206
 files=($base*.md)
 case ${#files[@]} in
   0)
     f=$base.md
     ;;
   1)
+    # shellcheck disable=SC2086
     f=$(echo $base*.md)
     ;;
   *)
     echo 'ERROR found multiple files' >&2
     echo >&2
+    # shellcheck disable=SC2011,SC2086
     ls $base*.md | xargs -L1 echo "- " >&2
     exit 1
     ;;
 esac
 
-bash-set-terminal-title LOG
-$EDITOR $f
+bash-set-terminal-title "$title"
+$EDITOR "$f"
