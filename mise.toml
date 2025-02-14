@@ -1,0 +1,12 @@
+[env]
+# https://mise.jdx.dev/mise-cookbook/python.html#a-python-project-with-virtualenv
+_.python.venv = { path = ".venv", create = true }
+
+[tools]
+python = "3.12.7"
+uv = "0.5.14"
+
+[settings]
+
+[settings.python]
+compile = true
