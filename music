@@ -75,6 +75,8 @@ def get_best_player(players: [Player]) -> Player:
             score += 2
         if 'firefox' in player.name:  # prefer firefox
             score += 1
+        if 'spotify' in player.name:  # prefer spotify
+            score += 1
         log.debug(f'score({player}) = {score}')
         scored[score] = player
     highscore = next(reversed(sorted(scored)))
