@@ -1,0 +1,68 @@
+#!/bin/bash
+set -e
+
+# https://github.com/felixhummel/clipboard
+# Copyright Felix Hummel
+# License: MIT
+
+PREFERRED_TARGETS="UTF8_STRING image/png"
+
+if [[ $@ =~ -h|--help ]]; then
+  cat<<EOF
+Usage: clipboard [-f|--force] [-h|--help]
+
+EXAMPLES
+
+Copy STDIN:
+  echo 'Hello, world!' | clipboard
+
+Paste to STDOUT:
+  clipboard
+
+Paste image to file:
+  clipboard > foo.png
+EOF
+  exit 0
+fi
+
+force=0
+
+do_output() {
+  target=$1
+  if [[ $target == 'image/png' ]]; then
+    # don't print to TTY
+    if [[ -t 1 && $force != 1 ]]; then
+      cat <<EOF >&2
+Will not print image. Your options:
+
+$0 --force
+$0 > foo.png
+EOF
+      exit 1
+    fi
+  fi
+  exec xclip -selection clipboard -out -target $target
+}
+
+if [[ -t 0 ]]; then  # stdin is a TTY
+  [[ $@ =~ -f|--force ]] && force=1
+  targets=$(xclip -selection clipboard -out -target TARGETS)
+  # if there is no text, then check if it's an image
+  for target in $PREFERRED_TARGETS; do
+    if [[ $targets =~ $target ]]; then
+      do_output $target
+      exit
+    fi
+  done
+else
+  target=UTF8_STRING
+  t=$(mktemp)
+  cp /dev/stdin $t
+  mime=$(file --brief --mime-type $t)
+  if echo $mime | grep -q ^image; then
+    target=$mime
+  fi
+  exec xclip -selection clipboard -target $target -in $t
+  exit
+fi
+
