@@ -1,26 +1,15 @@
 #!/home/felix/bin/.venv/bin/python
-# encoding: utf-8
-# sudo apt-get -y install build-essential libdbus-1-dev cmake libglib2.0-dev python3-dev
-# cd ~/bin
-# mise trust
-# uv sync
-# .venv/bin/pip install dbus-python click
+# pyright: reportUnusedFunction=false
 import logging
 import os
 import re
-from typing import List
+from typing import Iterable
 
 import click
 import dbus
 
 logging.basicConfig(level=os.environ.get('LOGLEVEL', 'warning').upper())
 log = logging.getLogger('music')
-
-
-try:
-    from dbus import DBusException
-except ImportError:
-    from dbus.exceptions import DBusException
 
 
 RE_NAME = re.compile(r'org\.mpris\.MediaPlayer2\.(.+)(\.instance\d+)?')
@@ -34,9 +23,11 @@ class Player:
     def __init__(self, bus_name):
         self.bus_name = bus_name
         log.debug(f'Player("{bus_name}")')
-        self.name = RE_NAME.match(bus_name).group(1)
+        self.name = RE_NAME.match(bus_name).group(1)  # pyright: ignore[reportOptionalMemberAccess]
         self.proxy = bus.get_object(bus_name, '/org/mpris/MediaPlayer2')
-        self.interface = dbus.Interface(self.proxy, dbus_interface='org.mpris.MediaPlayer2.Player')
+        self.interface = dbus.Interface(
+            self.proxy, dbus_interface='org.mpris.MediaPlayer2.Player'
+        )
 
     def call_method(self, method_name):
         method = self.interface.get_dbus_method(method_name)
@@ -58,14 +49,14 @@ class Player:
 
 def get_players():
     # qdbus | rg org.mpris.MediaPlayer2
-    for n in bus.list_names():
+    for n in bus.list_names():  # pyright: ignore[reportOptionalIterable]
         if n.startswith('org.mpris.MediaPlayer2'):
             p = Player(n)
             log.info(f'found player {p}')
             yield p
 
 
-def get_best_player(players: [Player]) -> Player:
+def get_best_player(players: Iterable[Player]) -> Player:
     scored = {}  # on identical scores: last one wins (yagni)
     for player in players:
         score = 0
@@ -100,13 +91,13 @@ def playpause():
 
 
 @main.command(name='Previous')
-def playpause():
+def play_prev():
     player = get_best_player(players)
     player.call_method('Previous')
 
 
 @main.command(name='Next')
-def playpause():
+def play_next():
     player = get_best_player(players)
     player.call_method('Next')
 
