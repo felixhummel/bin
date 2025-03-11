@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC2086
+
 # refresh group without logging out and in again
 set -euo pipefail
 new_group=$1
