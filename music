@@ -3,7 +3,7 @@
 import logging
 import os
 import re
-from typing import Iterable
+from typing import Dict, Iterable
 
 import click
 import dbus
@@ -56,8 +56,11 @@ def get_players():
             yield p
 
 
-def get_best_player(players: Iterable[Player]) -> Player:
-    scored = {}  # on identical scores: last one wins (yagni)
+ScoredPlayers = Dict[float, Player]
+
+
+def score_players(players: Iterable[Player]) -> ScoredPlayers:
+    result = {}
     for player in players:
         score = 0
         if player.can_pause():
@@ -67,9 +70,15 @@ def get_best_player(players: Iterable[Player]) -> Player:
         if 'firefox' in player.name:  # prefer firefox
             score += 1
         if 'spotify' in player.name:  # prefer spotify
-            score += 1
+            score += 1.1
+        if score in result:  # on indentical scores, last one wins
+            score = score + 0.01
         log.debug(f'score({player}) = {score}')
-        scored[score] = player
+        result[score] = player
+    return result
+
+
+def get_best_player(scored: ScoredPlayers) -> Player:
     highscore = next(reversed(sorted(scored)))
     winner = scored[highscore]
     log.debug(f'winner = {winner}')
@@ -77,6 +86,7 @@ def get_best_player(players: Iterable[Player]) -> Player:
 
 
 players = get_players()
+scored_players = score_players(players)
 
 
 @click.group()
@@ -86,26 +96,26 @@ def main():
 
 @main.command(name='PlayPause')
 def playpause():
-    player = get_best_player(players)
+    player = get_best_player(scored_players)
     player.call_method('PlayPause')
 
 
 @main.command(name='Previous')
 def play_prev():
-    player = get_best_player(players)
+    player = get_best_player(scored_players)
     player.call_method('Previous')
 
 
 @main.command(name='Next')
 def play_next():
-    player = get_best_player(players)
+    player = get_best_player(scored_players)
     player.call_method('Next')
 
 
 @main.command(name='players')
 def _players():
-    for player in players:
-        print(player)
+    for score, player in scored_players.items():
+        print(score, player)
 
 
 if __name__ == '__main__':
