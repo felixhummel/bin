@@ -1,0 +1,11 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+IFS=$'\n' lines=$(journalctl --list-boots | tail -n3)
+for line in $lines; do
+  #  -2 472b0e6e5d654b7ca77a275e1102aada Fri 2025-03-07 09:02:53 CET Fri 2025-03-07 16:51:14 CET
+  IFS=' ' read idx hash dow0 d0 t0 tz0 dow1 d1 t1 tz1 <<< $line
+  # [[ $tz0 != 'CET' || $tz1 != 'CET' ]] && echo "WARNING: Weird timezones: tz0=$tz0 tz1=$tz1" >&2
+  echo "$d0 $t0 --> $d1 $t1"
+done
