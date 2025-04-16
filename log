@@ -3,21 +3,24 @@ set -euo pipefail
 
 slug=${1:-}
 
-dir=$PWD
+wd=$PWD
 title=LOG
 
 # use ~/LOG if we are at $HOME
-if [[ "$(readlink -m "$dir")" == "$HOME" ]]; then
-  dir=~/LOG
+if [[ "$(readlink -m "$wd")" == "$HOME" ]]; then
+  wd=~/LOG
   title="PERSONAL LOG"
 fi
 
 # use ./LOG if present
-[[ -d ./LOG ]] && dir=$(readlink -m ./LOG)
+[[ -d ./LOG ]] && wd=$(readlink -m ./LOG)
 
-# subdirectory for year, e.g. LOG/22/
+# change working directory
+cd "$wd"
+
+# subdirectory for year, e.g. 22/
 year=$(date +%y)  # e.g. 22
-dir=$dir/$year
+dir=./$year
 mkdir -p "$dir"
 
 dt=$(date +%m-%d)  # e.g. 09-31
@@ -28,10 +31,8 @@ fi
 
 # given '?' as first arg, use fzf to select an existing file
 if [[ ${1:-} == '?' ]]; then
-  cd "$dir"
   f=$(fzf)
-  cd -
-  $EDITOR "$dir/$f"
+  $EDITOR "$f"
   return
 fi
 
