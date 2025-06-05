@@ -1,0 +1,57 @@
+#!/bin/bash
+set -euo pipefail
+
+GITLAB="$1"
+PROJECT_ID="$2"
+PIPELINE_ID="$3"
+CHECK_INTERVAL_S=10
+
+if [ -z "$GITLAB" ] || [ -z "$PROJECT_ID" ] || [ -z "$PIPELINE_ID" ]; then
+  echo "Usage: $0 <gitlab> <project_id> <pipeline_id>"
+  echo "Example: $0 git.example.com foo/bar 5678"
+  exit 1
+fi
+
+get_pipeline() {
+  gitlab -g "$GITLAB" -o json project-pipeline get --project-id "$PROJECT_ID" --id "$PIPELINE_ID"
+}
+
+url=$(get_pipeline | jq -r .web_url)
+
+while true; do
+  status=$(get_pipeline | jq -r .status)
+
+  # Check for errors during status retrieval
+  if [[ -z "$status" ]]; then
+    notify-send "ERROR" "Failed to retrieve pipeline status. Check your GitLab connection and project/pipeline IDs."
+    echo "Error: Failed to retrieve pipeline status. Check your GitLab connection and project/pipeline IDs."
+    exit 1
+  fi
+  case "$status" in
+    success)
+      break
+      ;;
+    failed)
+      break
+      ;;
+    canceled)
+      break
+      ;;
+    skipped)
+      break
+      ;;
+    manual)
+      break
+      ;;
+    *)
+      echo "Pipeline status: $status. Continuing to monitor..." >&2
+      ;;
+  esac
+
+  sleep $CHECK_INTERVAL_S
+done
+
+result=$(notify-send --action 'open_url=Open URL' "$status" "$url")
+if [[ "$result" == open_url ]]; then
+  xdg-open "$url"
+fi
