@@ -1,22 +1,28 @@
 #!/bin/bash
 set -euo pipefail
 
-GITLAB="$1"
-PROJECT_ID="$2"
-PIPELINE_ID="$3"
+PIPELINE_URL="$1"
 CHECK_INTERVAL_S=10
 
-if [ -z "$GITLAB" ] || [ -z "$PROJECT_ID" ] || [ -z "$PIPELINE_ID" ]; then
-  echo "Usage: $0 <gitlab> <project_id> <pipeline_id>"
-  echo "Example: $0 git.example.com foo/bar 5678"
+if [ -z "$PIPELINE_URL" ]; then
+  cat <<EOF >&2
+Usage: $0 PIPELINE_URL
+Example: $0 https://git.example.com/my/project/-/pipelines/1234
+
+Note that we assume that the python gitlab profile is named after the domain,
+e.g. git.example.com.
+EOF
   exit 1
 fi
 
-get_pipeline() {
-  gitlab -g "$GITLAB" -o json project-pipeline get --project-id "$PROJECT_ID" --id "$PIPELINE_ID"
-}
+# best URL parser ever :>
+IFS=/ read -r _ _ gitlab ns n _ _ pipeline_id <<< "$PIPELINE_URL"
 
-url=$(get_pipeline | jq -r .web_url)
+project_id=$ns/$n
+
+get_pipeline() {
+  gitlab -g "$gitlab" -o json project-pipeline get --project-id "$project_id" --id "$pipeline_id"
+}
 
 while true; do
   status=$(get_pipeline | jq -r .status)
@@ -51,7 +57,7 @@ while true; do
   sleep $CHECK_INTERVAL_S
 done
 
-result=$(notify-send --action 'open_url=Open URL' "$status" "$url")
+result=$(notify-send --action 'open_url=Open URL' "$status" "$PIPELINE_URL")
 if [[ "$result" == open_url ]]; then
-  xdg-open "$url"
+  xdg-open "$PIPELINE_URL"
 fi
