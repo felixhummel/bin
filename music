@@ -63,16 +63,22 @@ def score_players(players: Iterable[Player]) -> ScoredPlayers:
     result = {}
     for player in players:
         score = 0
+        log.debug(f'scoring {player}')
         if player.can_pause():
             score += 3
+            log.debug('can_pause: +3')
         if player.is_music_player():
             score += 2
+            log.debug('is_music_player: +2')
         if 'firefox' in player.name:  # prefer firefox
             score += 1
+            log.debug('firefox: +1')
         if 'spotify' in player.name:  # prefer spotify
             score += 1.1
+            log.debug('spotify: +1.1')
         if score in result:  # on indentical scores, last one wins
             score = score + 0.01
+            log.debug('last one: +0.01')
         log.debug(f'score({player}) = {score}')
         result[score] = player
     return result
