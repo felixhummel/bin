@@ -5,8 +5,8 @@ description = "/home/felix/bin"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "click>=8.1.8",
-    "dbus-python>=1.3.2",
+  "click>=8.1.8",
+  "libfelix[music]>=0.4.0",
 ]
 
 [tool.ruff]
@@ -16,4 +16,4 @@ line-length = 79
 quote-style = "single"
 
 [tool.pyright]
-typeCheckingMode = "basic"  # basedpyright less strict
+typeCheckingMode = "basic" # basedpyright less strict
