@@ -11,8 +11,6 @@ ln -s ~/bin/completion.bash ~/.bash/home-bin-completion
 
 For `music` script:
 ```sh
-sudo apt-get -y install build-essential libdbus-1-dev cmake libglib2.0-dev python3-dev
-cd ~/bin
-mise trust
-uv sync
+uv venv -p 3.11
+uv pip install 'libfelix[music,cli]>=0.5'
 ```
