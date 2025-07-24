@@ -1,4 +1,4 @@
-#!/usr/bin/env -S uv run
+#!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
@@ -15,6 +15,7 @@ Example Output:
 
     felixhummel.de (37.200.98.98): 3055 sec (about 50 min)
 """
+
 import calendar
 import time
 import sys
@@ -40,9 +41,14 @@ def main(domains):
             if remain_sec < 60:
                 print('%s (%s): %d sec' % (domain, ip, remain_sec))
             else:
-                print('%s (%s): %d sec (about %.1d min)' % (domain, ip, remain_sec, remain_sec / 60.0))
+                print(
+                    '%s (%s): %d sec (about %.1d min)'
+                    % (domain, ip, remain_sec, remain_sec / 60.0)
+                )
         except dns.resolver.NoAnswer:
             print('%s: no answer' % domain)
+        except dns.resolver.NXDOMAIN as e:
+            print(e)
 
 
 if __name__ == '__main__':
@@ -51,4 +57,3 @@ if __name__ == '__main__':
         raise SystemExit(1)
     domains = sys.argv[1:]
     main(domains)
-
