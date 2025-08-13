@@ -1,3 +1,4 @@
 /stats.db
+__pycache__
 .venv
 .sesskey
