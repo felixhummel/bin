@@ -1,7 +1,13 @@
-#!/usr/bin/env python
-# encoding: utf-8
-
-# pip install linkify-it-py mistletoe structlog
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#       "linkify-it-py",
+#       "mistletoe ",
+#       "structlog",
+# ]
+# ///
+from genericpath import isdir
 import sys
 
 from pathlib import Path
@@ -12,16 +18,23 @@ import structlog
 log = structlog.get_logger()
 
 
+if len(sys.argv) < 2:
+    log.error(f'Usage: {__file__} PATH...')
+    sys.exit(1)
+
+
 def _replacements():
     # (7, 6), ..., (2, 1)
-    pairs = zip(range(6,0,-1), range(7,1,-1))
+    pairs = zip(range(6, 0, -1), range(7, 1, -1))
     for a, b in pairs:
         yield f'<h{a}', f'<h{b}'
         yield f'</h{a}', f'</h{b}'
 
+
 # log.info(list(_replacements()))
 
-print("""
+print(
+    """
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,26 +50,37 @@ print("""
     </style>
 </head>
 <body class="felix-md">
-""".strip())
+""".strip()
+)
 
-files = [Path(x) for x in sys.argv[1:]]
+files = []
+for x in sys.argv[1:]:
+    p = Path(x)
+    if not p.is_file():
+        log.warning('not a file', path=str(p))
+        continue
+    files.append(p)
 
-print("""
+print(
+    """
 <h1>TOC</h1>
 <ol>
-""".strip())
+""".strip()
+)
 for f in files:
-    print(f'<li><a href="#{f.name}">{f.name}</a></li>')
-print("</ol>")
+    print(f'<li><a href="#{f}">{f}</a></li>')
+print('</ol>')
 
 for f in files:
     rendered = mistletoe.markdown(f.read_text())
     for a, b in _replacements():
         rendered = rendered.replace(a, b)
-    rendered = f'<h1 id="{f.name}">{f.name}</h1>\n{rendered}\n\n'
+    rendered = f'<h1 id="{f}">{f}</h1>\n{rendered}\n\n'
     print(rendered)
-print("""
+print(
+    """
     </ol>
 </body>
 </html>
-""".strip())
+""".strip()
+)
