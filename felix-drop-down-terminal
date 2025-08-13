@@ -1,0 +1,6 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+# xfce4-terminal --drop-down
+tdrop -amt -y0 -h1051 wezterm --config-file ~/.config/wezterm/dropdown.lua
