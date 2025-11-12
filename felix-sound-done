@@ -1,4 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-mpv --vid=no --no-terminal ~/Documents/sounds/sheep.wav
