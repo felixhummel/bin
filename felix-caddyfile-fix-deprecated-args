@@ -1,0 +1,9 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+x=3
+echo "replacing up to $x" >&2
+for i in $(seq 0 $x); do
+  sed -i -e "s/{args.${i}}/{args[${i}]}/g" "$@"
+done
