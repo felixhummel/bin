@@ -57,6 +57,7 @@ while true; do
   sleep $CHECK_INTERVAL_S
 done
 
+echo "$PIPELINE_URL  $status" >&2
 result=$(notify-send --action 'open_url=Open URL' "$status" "$PIPELINE_URL")
 if [[ "$result" == open_url ]]; then
   xdg-open "$PIPELINE_URL"
