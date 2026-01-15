@@ -25,5 +25,6 @@ def main(stdscr):
     except KeyboardInterrupt:
         return
 
+
 if __name__ == '__main__':
     curses.wrapper(main)

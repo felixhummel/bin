@@ -10,6 +10,7 @@ BPM (Beats Per Minute) describe the fraction F[1/m] = x / 1m.
 >>> bpm2ms(120)
 500
 """
+
 import sys
 
 

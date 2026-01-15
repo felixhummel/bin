@@ -8,7 +8,6 @@ import os
 import re
 import sys
 
-from pathlib import Path
 import xml.etree.ElementTree as ET
 
 import requests
@@ -18,11 +17,14 @@ URL = 'https://chromedriver.storage.googleapis.com/'
 try:
     cache_dir = os.environ['REQUESTS_CACHE_DIR']
     import requests_cache
+
     requests_cache.install_cache(cache_dir)
 except KeyError:
     pass
 except ImportError:
-    sys.stderr.write('ERROR: REQUESTS_CACHE_DIR set, but requests-cache not installed. Try:\n')
+    sys.stderr.write(
+        'ERROR: REQUESTS_CACHE_DIR set, but requests-cache not installed. Try:\n'
+    )
     sys.stderr.write('pip install requests-cache\n')
     raise SystemExit
 
@@ -45,9 +47,11 @@ for e in root.findall('./Contents/Key'):
     if match:
         versions.append(match.group(1))
 
+
 def _version_sort_key(v):
     # str(101.0.4951.15) --> int(101)
     return int(v.split('.')[0])
+
 
 versions = sorted(versions, key=_version_sort_key)
 

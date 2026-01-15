@@ -3,6 +3,7 @@
 _.python.venv = { path = ".venv", create = true }
 
 [tools]
+"github:j178/prek" = "latest"
 python = "3.12.7"
 uv = "0.5.14"
 

@@ -7,7 +7,6 @@
 #       "structlog",
 # ]
 # ///
-from genericpath import isdir
 import sys
 
 from pathlib import Path

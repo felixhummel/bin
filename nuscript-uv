@@ -26,4 +26,3 @@ EOF
 
 chmod +x $1
 $open_new $1
-

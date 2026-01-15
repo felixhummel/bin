@@ -9,4 +9,3 @@ if [[ -z ${1:-} ]]; then
 else
     echo "$play_alarm_cmd" | at now + $1 minutes 2>/dev/null
 fi
-

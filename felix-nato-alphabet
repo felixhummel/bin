@@ -36,12 +36,12 @@ Yankee
 Zulu
 """
 
-NATO = NATO.strip().split("\n")
+NATO = NATO.strip().split('\n')
 
 CHAR2NATO = {x[0]: x for x in NATO}
 
 if word is None:
-    print("\n".join(NATO))
+    print('\n'.join(NATO))
 else:
     for c in word:
         print(CHAR2NATO[c.upper()])

@@ -8,4 +8,3 @@ new_group=$1
 orig_group=$(id -g)
 newgrp $new_group
 newgrp $orig_group
-

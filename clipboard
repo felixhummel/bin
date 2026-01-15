@@ -65,4 +65,3 @@ else
   exec xclip -selection clipboard -target $target -in $t
   exit
 fi
-
