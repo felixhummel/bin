@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+
+hash gtk4-icon-browser || sudo apt install gtk-4-examples
+exec gtk4-icon-browser
