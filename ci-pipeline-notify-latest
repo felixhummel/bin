@@ -1,10 +1,13 @@
 #!/bin/bash
-# shellcheck disable=SC2086
 set -euo pipefail
 
-domain=$1
-project=$2
+input_url=$1
+temp="${input_url#*://}"
+domain="${temp%%/*}"
+path="${temp#*/}"
+IFS='/' read -r seg1 seg2 _ <<< "$path"
+project="$seg1/$seg2"
 
-url=$(gitlab -g $domain -o json project-pipeline list --project-id $project --no-get-all --per-page 1 | jq -r '.[0].web_url')
+url=$(gitlab -g "$domain" -o json project-pipeline list --project-id "$project" --no-get-all --per-page 1 | jq -r '.[0].web_url')
 set -x
-ci-pipeline-notify $url
+ci-pipeline-notify "$url"
