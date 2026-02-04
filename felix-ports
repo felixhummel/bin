@@ -1,4 +1,5 @@
 #!/bin/bash
 set -euo pipefail
 
-exec sudo lsof -Pn -iTCP -sTCP:LISTEN
+# merge duplicates (both ipv4 and ipv6)
+exec netstat -ant | rg LISTEN | awk '{ print $4}' | rg ':(\d+)$' -r '$1' --only-matching | sort -n | uniq
