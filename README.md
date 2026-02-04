@@ -12,5 +12,5 @@ ln -s ~/bin/completion.bash ~/.bash/home-bin-completion
 For `music` script:
 ```sh
 uv venv -p 3.12
-uv pip install 'libfelix[music,cli]>=0.5'
+uv pip install 'libfelix[full]>=0.5'
 ```
