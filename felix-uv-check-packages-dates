@@ -1,0 +1,71 @@
+#!/usr/bin/env -S uv run --script
+# vim: set ft=python :
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["httpx", "libfelix"]
+# ///
+
+import asyncio
+import httpx
+import subprocess
+import tomllib
+from libfelix.logging import configure_structlog_console_from_env, get_logger
+
+configure_structlog_console_from_env()
+log = get_logger()
+
+
+async def get_package_date(client: httpx.AsyncClient, name: str) -> str:
+    """Fetch the latest release date for a package from PyPI."""
+    try:
+        resp = await client.get(f'https://pypi.org/pypi/{name}/json', timeout=10.0)
+        if resp.status_code != 200:
+            return f'0000-00-00 {name}'
+        info = resp.json().get('info', {})
+        version = info.get('version', '')
+        releases = resp.json().get('releases', {})
+        entry = releases.get(version)
+        if not entry:
+            return f'0000-00-00 {name}'
+        return f'{entry[0]["upload_time"][:10]} {name}'
+    except Exception:
+        return f'0000-00-00 {name}'
+
+
+async def main():
+    # 1. Execute uv export to get the full lock state in TOML format
+    cmd = [
+        'uv',
+        '--directory',
+        'service',
+        'export',
+        '--all-packages',
+        '--all-extras',
+        '--format',
+        'pylock.toml',
+    ]
+
+    process = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    lock_data = tomllib.loads(process.stdout)
+    log.debug('parsed', lock_data=lock_data)
+
+    # 2. Collect unique packages from the export
+    packages = {p['name'] for p in lock_data.get('packages', [])}
+
+    # 3. Fetch dates concurrently using httpx
+    async with httpx.AsyncClient() as client:
+        tasks = [get_package_date(client, name) for name in packages]
+        results = await asyncio.gather(*tasks)
+
+    # 4. Sort by date descending and print
+    for line in sorted(results, reverse=True):
+        print(line)
+
+
+if __name__ == '__main__':
+    try:
+        asyncio.run(main())
+    except subprocess.CalledProcessError as e:
+        log.error(f'Failed to run uv: {e.stderr}')
+    except KeyboardInterrupt:
+        pass
