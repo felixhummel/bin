@@ -1,0 +1,29 @@
+#!/usr/bin/env -S uv run --quiet --script
+# vim: set ft=python :
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "python-whois",
+# ]
+# ///
+import sys
+
+import whois
+
+
+def is_available(domain):
+    try:
+        whois.whois(domain)
+        return False
+    except:
+        return True
+
+
+if __name__ == '__main__':
+    any_ok = False
+    for domain in sys.argv[1:]:
+        if is_available(domain):
+            # flush every line :)
+            print(domain)
+            any_ok = True
+    raise SystemExit(0 if any_ok else 1)
