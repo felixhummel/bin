@@ -1,0 +1,13 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+MY_KEY=~/.ssh/id_ed25519.pub
+
+new_age_ssh_recipient="$1"
+
+encrypted_keys=$(rg '^(.+) = \{ age =' .mise.local.toml --only-matching -r'$1')
+
+for key in $encrypted_keys; do
+  echo "$key" | mise set --file .mise.local.toml --age-encrypt --age-ssh-recipient $MY_KEY --age-ssh-recipient "$new_age_ssh_recipient" --prompt "$key"
+done
