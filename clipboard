@@ -10,7 +10,7 @@ PREFERRED_TARGETS="UTF8_STRING image/png"
 
 if [[ $* =~ -h|--help ]]; then
   cat<<EOF
-Usage: clipboard [-f|--force] [-h|--help]
+Usage: clipboard [-h|--help]
 
 EXAMPLES
 
@@ -26,13 +26,11 @@ EOF
   exit 0
 fi
 
-force=0
-
 do_output() {
   target=$1
   if [[ $target =~ image/ ]]; then
     # stdout is a tty
-    if [[ -t 1 && $force != 1 ]]; then
+    if [[ -t 1 ]]; then
       # try to print sixels
       if hash img2sixel &>/dev/null; then
         # print img in terminal
@@ -40,11 +38,9 @@ do_output() {
         return
       fi
       cat <<EOF >&2
-Will not print image. Your options:
-
-$0 --force
-$0 > foo.png
-# use a terminal with sixel support and install img2sixel
+Will not print image.
+Either use a terminal with sixel support and install img2sixel
+or run "$0 > foo.png".
 EOF
       exit 1
     fi
@@ -53,7 +49,6 @@ EOF
 }
 
 if [[ -t 0 ]]; then  # stdin is a TTY
-  [[ $* =~ -f|--force ]] && force=1
   targets=$(xclip -selection clipboard -out -target TARGETS)
   # if there is no text, then check if it's an image
   for target in $PREFERRED_TARGETS; do
