@@ -1,0 +1,14 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+pattern="$1"
+dir="${2:-.}"
+
+fd -g "$pattern" "$dir" | while read -r f; do
+    dir=$(git -C "$(dirname "$f")" rev-parse --show-toplevel 2>/dev/null) || continue
+    count=$(git -C "$dir" log --oneline --author=felix -- "$f" 2>/dev/null | wc -l || true)
+    [[ "$count" == 0 ]] && continue
+    last=$(git -C "$dir" log -1 --format="%as" --author=felix -- "$f" 2>/dev/null)
+    echo "$last	$count	$f"
+done | sort -r | head -20
