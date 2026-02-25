@@ -1,7 +1,0 @@
-[env]
-# https://mise.jdx.dev/mise-cookbook/python.html#a-python-project-with-virtualenv
-_.python.venv = { path = ".venv", create = true }
-
-[tools]
-"github:j178/prek" = "latest"
-uv = "latest"

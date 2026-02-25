@@ -1,8 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-# list full volume names of the current docker-compose project
-compose_project=$(docker-compose config | grep ^name: | cut -d' ' -f2)
-relative_volumes=$(docker-compose config --volumes)
-for v in $relative_volumes; do
-  echo ${compose_project}_$v
-done

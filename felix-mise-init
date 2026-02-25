@@ -1,6 +1,0 @@
-#!/bin/bash
-# shellcheck disable=SC2086
-set -euo pipefail
-
-cp ~/best-practices/mise.toml .
-mise trust

@@ -1,8 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-# Use <TAB> to put lines from bash history into the clipboard.
-
-# - use double the lines of the terminal
-# - ignore timestamps (prefixed with `#`)
-tail -n $(( $(tput lines) * 2 )) ${HISTFILE:-~/.bash_history} | grep -v ^# | fzf --multi --tac --no-sort | clipboard

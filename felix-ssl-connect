@@ -1,8 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-servername=$1
-port=${2:-443}
-ip_address=${3:-$servername}
-
-echo exit | openssl s_client -connect $ip_address:$port -servername $servername

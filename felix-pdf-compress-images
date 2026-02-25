@@ -1,7 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-input=$1
-output=$2
-
-command gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -q -o $output $input

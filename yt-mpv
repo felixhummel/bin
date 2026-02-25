@@ -1,8 +1,0 @@
-#!/bin/bash
-# shellcheck disable=SC2086
-set -euo pipefail
-
-url=$1
-title="$(yt-dlp --print filename $url)"
-bash-set-terminal-title "$title"
-mpv --no-video $url

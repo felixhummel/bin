@@ -1,7 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-first_boot_log_ts() {
-  journalctl -b -o short-iso | head -n2 | tail -n1 | awk '{ print $1 }'
-}
-date +"%F %H:%M:%S" --date="$(first_boot_log_ts)"

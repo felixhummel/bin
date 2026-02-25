@@ -1,5 +1,0 @@
-#!/bin/bash
-# shellcheck disable=SC2086
-set -euo pipefail
-
-fd . --type file ~/.var/app/org.freecad.FreeCAD/data/FreeCAD/Mod/parts_library | sort | fzf --layout reverse-list

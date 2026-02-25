@@ -1,5 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-[[ -n $1 ]]
-echo -ne "\033]0;$1\007"

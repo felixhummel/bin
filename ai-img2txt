@@ -1,5 +1,0 @@
-#!/bin/bash
-# shellcheck disable=SC2086
-set -euo pipefail
-
-llm -t flash 'extract text as markdown from this image' -a -

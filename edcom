@@ -1,7 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-# complete -A command edcom
-# edcom edcom  # INCEPTION :D
-path=$(which $1)
-exec ${EDITOR:-vi} $path

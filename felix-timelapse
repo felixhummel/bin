@@ -1,9 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-# https://stackoverflow.com/questions/41902160/create-time-lapse-video-from-other-video
-for i in $@; do
-  o=$i.timelapse.mp4
-
-  ffmpeg -i $i -r 60 -filter:v "setpts=0.2*PTS" -vcodec libx264 -an $o
-done

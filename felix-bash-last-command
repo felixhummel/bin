@@ -1,5 +1,0 @@
-#!/bin/bash
-# shellcheck disable=SC2086
-set -euo pipefail
-
-tail ~/.bash_history | rg --text -v ^# | tail -n1 | sed 's/[[:space:]]*$//'

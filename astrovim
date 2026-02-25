@@ -1,3 +1,0 @@
-#!/bin/bash
-[[ ! -d ~/.config/astrovim ]] && git clone --depth 1 https://github.com/AstroNvim/template ~/.config/astrovim
-NVIM_APPNAME=astrovim exec nvim "$@"

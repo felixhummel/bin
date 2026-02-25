@@ -1,4 +1,0 @@
-#!/bin/bash
-set -euo pipefail
-
-exec docker ps --format '{{.Label "com.docker.compose.project.working_dir"}}' | sort | uniq
