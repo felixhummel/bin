@@ -1,0 +1,15 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+my_name=$(basename $0)
+
+assert_tool() {
+  local tool=$1
+  hash $tool &>/dev/null || notify-send --icon=dialog-error "$my_name" "ERROR\nCould not find $tool.\nTry 'apt install $tool'."
+}
+
+assert_tool maim
+assert_tool xclip
+assert_tool xdotool
+maim -i $(xdotool getactivewindow) | xclip -selection clipboard -t image/png
