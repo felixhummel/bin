@@ -1,0 +1,14 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+set -euo pipefail
+
+url=$(git remote get-url origin)
+
+# If already https://, keep it
+if [[ "$url" == https://* ]]; then
+    echo "$url"
+    exit 0
+fi
+
+# Convert git@github.com:user/repo.git -> https://github.com/user/repo.git
+echo "${url/git@github.com:/https://github.com/}"
