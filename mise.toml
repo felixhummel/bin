@@ -4,4 +4,4 @@ _.python.venv = { path = ".venv", create = true }
 
 [tools]
 "github:j178/prek" = "latest"
-uv = "0.5.14"
+uv = "latest"
