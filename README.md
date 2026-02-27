@@ -2,7 +2,7 @@
 https://git.felixhummel.de/pub/bin
 
 ```
-git remote rename origin github
+git remote remove origin
 git remote add origin https://codeberg.org/felixhummel/bin.git
 git fetch
 git checkout main
